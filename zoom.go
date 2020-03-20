@@ -23,7 +23,7 @@ var zoomURLRegexpPwd = regexp.MustCompile(`https://.*?zoom\.us/j/.*pwd=(.*)`)
 // NextEvents returns the next N calendar events in your primary calendar.
 // It only returns events which contain Zoom video chats.
 func NextEvents(service *calendar.Service, count int) ([]*calendar.Event, error) {
-	t := time.Now().Add(-5 * time.Minute).Format(time.RFC3339)
+	t := time.Now().Format(time.RFC3339)
 
 	events, err := service.Events.
 		List("primary").
@@ -83,12 +83,11 @@ func MeetingURLFromEvent(event *calendar.Event) (*url.URL, bool) {
 
 	matches := zoomURLRegexp.FindAllStringSubmatch(input, -1)
 	if len(matches) == 0 || len(matches[0]) == 0 {
-                fmt.Println("No matches...")
+		fmt.Println("No matches...")
 		return nil, false
 	}
 
 	haspass := zoomURLRegexpPwd.FindAllStringSubmatch(event.Description, -1)
-
 
 	// By default, match the whole URL.
 	stringURL := matches[0][0]
@@ -108,7 +107,7 @@ func MeetingURLFromEvent(event *calendar.Event) (*url.URL, bool) {
 		}
 	}
 
-        fmt.Println(stringURL)
+	fmt.Println(stringURL)
 	parsedURL, err := url.Parse(stringURL)
 	if err != nil {
 		return nil, false
